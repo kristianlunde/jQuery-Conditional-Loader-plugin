@@ -1,0 +1,12 @@
+# jQuery Conditional Loader plugin
+
+Simplifies the process of doing conditional loading of data depending on the window size of the browser.
+
+This is an alpha version and is due to be changed soon. It is not guaranteed that it works as it should either.
+
+Usage:
+
+$('div[role="twitter"]').content({size: 640, html: 'Display 2 tweets'})
+	.content({size: 992, html : 'display 5 tweets'})
+	.content({size: 1364, html : 'display all tweets'});
+

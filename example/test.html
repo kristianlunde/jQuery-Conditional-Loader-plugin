@@ -1,0 +1,42 @@
+<!doctype html>
+
+<head>
+<meta charset="utf-8">
+
+<title>jQuery plugin test</title>
+<meta name="description" content="">
+<meta name="author" content="Kristian Lunde">
+</head>
+
+<body class="clearfix">
+
+<div id="id-a" class="jalla tjalla" style="border: 1px solid red; width: 150px; height: 150px; float: left; margin: 5px;" role="a">A</div>
+<div style="border: 1px solid red; width: 150px; height: 150px; float: left; margin: 5px;" role="b">B</div>
+<div style="border: 1px solid red; width: 150px; height: 150px; float: left; margin: 5px;" role="c">C</div>
+<div style="border: 1px solid red; width: 150px; height: 150px; float: left; margin: 5px;" role="d">D</div>
+
+
+<!-- Scripts -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+
+<script src="../jquery.content-0.0.1.js"></script>
+
+<!--[if (lt IE 9) & (!IEMobile)]>
+<script src="js/libs/imgsizer.js"></script>
+<![endif]-->
+
+<script>
+
+$('#id-a').content({size : 640, html : 'a: 640'})
+	.content({size: 320, html : 'a 320'})
+	.content({size: 992, html : 'a 992'})
+	.content({size: 1300, html: 'a 1300'});
+
+$('div[role="b"]').content({size: 640, html : 'b 640!!!'}).content({size: 992, html : 'b  992'}).content({size: 1364, html : 'b 1364!!!!'});
+
+$('div[role="c"]').content({size: 630, html : 'c 630!!!'}).content({size: 942, html : 'c  942'}).content({size: 1364, html : 'c 1364!!!!'});
+$('div[role="d"]').content({size: 630, html : 'd 630!!!'}).content({size: 942, html : 'd  942'}).content({size: 1364, html : 'd 1364!!!!'});
+
+</script>
+</body>
+</html>

@@ -1,59 +1,80 @@
-
 (function($){
-	
-	var contentManager = {
-			elements : {},
+	var contentManager = {		
+			elements : [],
 			
+			/**
+			 * This is slightly horrible, ideally this should just use the selector used
+			 * in the query as an identificator but I can't seem to get access to it, an alternative
+			 * would be to generate a hash of the object
+			 * 
+			 * Example of how this would be best implemented:
+			 * 
+			 * var hash_map = {};
+			 * hash_map[jQuery.selector()].data('sizes' '768', content);
+			 * 
+			 */
 			push : function(delement, size, content) {
-				var el = {element : delement, size: size, content : content};
-				if(typeof this.elements[size] === 'undefined') {
-					this.elements[size] = [];
+				var sizes = delement.data('sizes');
+				if(typeof sizes === 'undefined') {
+					 sizes = {};
 				}
-				this.elements[size].push(el);
-				if(typeof this.sizes)
+				
+				sizes[size.toString()] = content;
+				
+				if(typeof sizes.minWidth === 'undefined') {
+					sizes.minWidth = 0;
+				}
+				
+				$.each(sizes, function(key, value){
+					if(sizes.minWidth === 0) {
+						sizes.minWidth = parseInt(key);
+					}
+					if(sizes.minWidth > parseInt(key)) {
+						sizes.minWidth = parseInt(key);
+					}
+				});
+				
+				delement.data('sizes', sizes);
+				this.elements.push(delement);
+				
+				//trim down the array so it only keeps one reference pr DOM element
+				this.elements = jQuery.unique(this.elements);
 				return this;
 			},
 			
 			update : function() {
-				var sizes = [];
-				for(key in this.elements) {
-					if(typeof this.elements[key] === 'object') {
-						sizes.push(key);
-					}
-				}
-				this.findElements(sizes);
-			},
-			
-			findElements : function(sizes) {
-				sizes = sizes.reverse();
-				var found = false;
-				for(var size = 0; size < sizes.length; size++) {	
-					if(document.documentElement.clientWidth > parseInt(sizes[size])) {
-						if(found) {
-							continue;
-						}
-						found = true;
-						for(var j = 0; j < this.elements[sizes[size]].length; j++) {
-							
-							this.elements[sizes[size]][j].element.html(this.elements[sizes[size]][j].content);
-						}
+				
+				var max, currentWindowSize;
+				
+				currentWindowSize = document.documentElement.clientWidth;
+				$.each(this.elements, function(key, element){
+					widths = element.data('sizes');
+					
+					if(currentWindowSize < widths.minWidth) {
+						element.html('');
+						
 					} else {
-						for(var k = 0; k < this.elements[sizes[size]].length; k++) {
-							this.elements[sizes[size]][k].element.html('');
-							
+						max = 0;
+						for(key in widths) {	
+							if(key !== 'minWidth') {
+								if(parseInt(key) <= currentWindowSize) {
+									max = parseInt(key);
+								}
+							}
+						}
+						if(max !== 0) {
+							element.html(widths[max.toString()]);
 						}
 					}
 					
-				}
+				});
+				return this;
 			}
-				
+
 	};
 	
 	$.fn.extend({
 		content : function(options) {
-
-			var me = this;
-			
 			contentManager.push(this, options.size, options.html);
 			contentManager.update();
 			
